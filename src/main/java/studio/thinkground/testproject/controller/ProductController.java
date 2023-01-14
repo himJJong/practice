@@ -1,5 +1,7 @@
 package studio.thinkground.testproject.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import studio.thinkground.testproject.service.ProductService;
@@ -8,6 +10,8 @@ import studio.thinkground.testproject.data.dto.ProductDTO;
 @RestController
 @RequestMapping("api/v1/product-api")
 public class ProductController {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
     private ProductService productService;
 
     @Autowired
@@ -18,7 +22,17 @@ public class ProductController {
     // http://localhost:8080/api/v1/product-api/product/{productId}
     @GetMapping(value = "/product/{productid}")
     public ProductDTO getProduct(@PathVariable String productid){
-        return productService.getProduct(productid);
+        long startTime = System.currentTimeMillis();
+        LOGGER.info("[productController] perform {} of testproject API", "getProduct");
+
+        ProductDTO productDTO = productService.getProduct(productid);
+
+        LOGGER.info("[productController] Response : : productID = {}, productName = {}," +
+                "productPrice = {}, productStock = {}, ResponseTime = {}ms",productDTO.getProductId(),productDTO.getProductName()
+        ,productDTO.getProductPrice(), productDTO.getProductStock(), (System.currentTimeMillis()-startTime));
+
+        LOGGER.info("[ProductController] Response : : productId = " + productDTO.getProductId()+" ,");
+        return productDTO;
     }
 
     // http://localhost:8080/api/v1/product-api/product
